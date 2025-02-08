@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+service GrpcExampleService {
+  rpc AddUsers (stream UserInfo) returns (AddUsersResponse) {}
+  rpc GetUsers (Empty) returns (stream UserResponse) {}
+  rpc GetUserByLogin (GetUserByLoginRequest) returns (UserResponse) {}
+  rpc DeleteUsers (stream DeleteUserInfo) returns (stream DeleteUserResponse) {}
+}
+
+enum ResponseErrorCode {
+  OK = 0;
+  BAD_REQUEST = 1;
+  NOT_FOUND = 2;
+  ALREADY_EXIST = 3;
+}
+
+message Empty {}
+
+message ResponseMeta {
+  ResponseErrorCode error_code = 1;
+}
+
+message UserInfo {
+  optional int32 id = 1;
+  optional string login = 2;
+  optional string email = 3;
+  optional string city = 4;
+}
+
+message DeleteUserInfo {
+  int32 id = 1;
+}
+
+message UserResponse {
+  optional UserInfo user_info = 1;
+  optional ResponseMeta response_meta = 2;
+}
+
+message AddUsersResponse {
+  repeated UserResponse add_results = 1;
+}
+
+message GetUserByLoginRequest {
+  string login = 1;
+}
+
+message DeleteUserResponse {
+  DeleteUserInfo user_info = 1;
+  ResponseMeta response_meta = 2;
+}
